@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            task 1
+        </title>
+        <link rel="stylesheet" href="cssDOM.css">
+        <script src="https://kit.fontawesome.com/9e81572f0e.js" crossorigin="anonymous"></script>
+    </head>
+
+<body>
+<header>
+<div class="top">
+    <div id="left"><i class="fa-solid fa-house fa-xs"></i> Home </div>
+    <div id="right"> Ismail Ihsan Bulbul </div>
+</div>
+</header>
+<main>
+<aside>
+    <div class="addItem"> <span id="addItem"> &nbsp <i class="fa-solid fa-plus fa-sm" ></i> &nbsp <b>New Item </b></span></div>
+
+    <div class="dropdown"><i class="fa-solid fa-grip-vertical fa-xs"></i> &nbsp Dashboard 
+        <i class="fa-solid fa-sort-down fa-xs" onclick="toggleDisplay1(this)" style="cursor: pointer;"></i></div>
+    <div class="droped-down1"> Dashboard </div>
+    <div class="droped-down1"> Dashboard </div>
+    <div class="droped-down1"> Dashboard </div>
+    
+    <div class="dropdown"><i class="fa-solid fa-grip-vertical fa-xs"></i> &nbsp Application
+        <i class="fa-solid fa-sort-down fa-xs" onclick="toggleDisplay2(this)" style="cursor: pointer;"></i> </div>
+        <div class="droped-down2"> Application </div>
+        <div class="droped-down2"> Application </div>
+        <div class="droped-down2"> Application </div>    
+        
+        <div class="dropdown"><i class="fa-solid fa-grip-vertical fa-xs"></i> &nbsp Elements
+            <i class="fa-solid fa-sort-down fa-xs" onclick="toggleDisplay3(this)" style="cursor: pointer;"></i> </div>
+            <div class="droped-down3"> Elements </div>
+            <div class="droped-down3"> Elements </div>
+            <div class="droped-down3"> Elements </div> 
+</aside>
+<section>
+<div>
+    <h1 style="font-size: 2em;"> Welcome </h1>
+    <div style="display: flex; align-items: center;">
+    <div  style=" width: 140px; float: left; border-radius: 50%; height : 140px; background-color: rgb(169, 169, 169);"></div>
+    <h1 style="padding: 20px;">Username</h1>
+    </div>
+</div>
+<br>
+
+<div class="mainContent">
+
+<h2 style="margin-bottom: 5px; margin-top: 0%;">Form Title</h2>
+
+Lorem ipsum dolor sit amet consectetur, adipisicing elit. Minus debitis quis ea cumque maxime asperiores consequatur odio magnam.
+
+<br><br>
+
+<div style="background-color: lightsalmon; border: 2px solid red; width: 77.95vw; padding: 8px 15px"> <i class="fa-solid fa-lg fa-circle-info" style="color: #f04242;"></i> &nbsp hare ram hare ram hare ram hare ram hare ram hare ram</div>
+
+<br>
+<table border="2px" id="myTable">
+<thead>
+<tr>
+<th>Full Name</th> <th>Username</th> 
+<th>Email</th> <th>Action</th> 
+</tr>
+</thead>
+
+<tbody>
+    <!--table rows aayenge-->
+</tbody>
+
+
+</table>
+</div>
+
+
+<script>
+
+    function toggleDisplay1(icon){
+        var elements = document.querySelectorAll('.droped-down1');
+        elements.forEach(element => {
+            if(element.style.display === 'none'){element.style.display = 'block';}
+            else{element.style.display = 'none';}
+        });
+
+        icon.classList.toggle('fa-solid fa-sort-up fa-xs')
+        icon.classList.toggle('fa-solid fa-sort-down fa-xs')   
+    }
+
+    function toggleDisplay2(icon){
+        var elements = document.querySelectorAll('.droped-down2');
+        elements.forEach(element => {
+            if(element.style.display === 'none'){element.style.display = 'block';}
+            else{element.style.display = 'none';}
+        });
+        
+        icon.classList.toggle('fa-solid fa-sort-up fa-xs')
+        icon.classList.toggle('fa-solid fa-sort-down fa-xs')   
+    }
+    function toggleDisplay3(icon){
+        var elements = document.querySelectorAll('.droped-down3');
+        elements.forEach(element => {
+            if(element.style.display === 'none'){element.style.display = 'block';}
+            else{element.style.display = 'none';}
+        });
+        
+        icon.classList.toggle('fa-solid fa-sort-up fa-xs')
+        icon.classList.toggle('fa-solid fa-sort-down fa-xs')   
+    }
+
+
+
+
+
+    document.addEventListener('DOMContentLoaded', fetchData);
+
+    function fetchData() {
+            fetch('https://dummyjson.com/users') //api
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Fetched data:', data); // inspect data structure
+                    const users = data.users; // acces 'users' array 
+                    if (Array.isArray(users)) {
+                        const tableBody = document.querySelector('#myTable tbody');
+                        users.forEach(user => {
+                            const newRow = tableBody.insertRow();
+                            const fullNameCell = newRow.insertCell(0);
+                            const usernameCell = newRow.insertCell(1);
+                            const emailCell = newRow.insertCell(2);
+                            const actionsCell = newRow.insertCell(3);
+
+                            // make full name
+                            fullNameCell.innerText = `${user.firstName} ${user.maidenName} ${user.lastName}`;
+                            usernameCell.innerText = user.username;
+                            emailCell.innerText = user.email;
+
+                            actionsCell.innerHTML = `<div class="buttons"><button onclick="editRow(this)" class="edit"> <i class="fa-regular fa-floppy-disk"></i> &nbsp Edit</button> 
+                            <button onclick="deleteRow(this)" class="delete"> <i class="fa-regular fa-floppy-disk"></i> &nbsp Delete</button></div>`;
+                        });
+                    } else {
+                        console.error('Expected an array but got:', typeof users);
+                    }
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+
+
+        function editRow(button) {
+            const row = button.parentElement.parentElement;
+            const cells = row.getElementsByTagName('td');
+            for (let i = 0; i < cells.length - 1; i++) { // exclude last cell having button
+                const cell = cells[i];
+                const currentText = cell.innerText;
+                cell.innerHTML = `<input type="text" value="${currentText}" />`;
+            }
+            button.innerText = 'Save';
+            button.onclick = () => saveRow(button);
+        }
+
+        function saveRow(button) {
+            const row = button.parentElement.parentElement;
+            const cells = row.getElementsByTagName('td');
+            for (let i = 0; i < cells.length - 1; i++) { // exclude last cell having button
+                const cell = cells[i];
+                const input = cell.getElementsByTagName('input')[0];
+                cell.innerText = input.value;
+            }
+            button.innerText = 'Edit';
+            button.onclick = () => editRow(button);
+        }
+
+        function deleteRow(button) {
+            const row = button.parentElement.parentElement;
+            row.remove();
+        }
+
+
+</script>
+
+things left to do:<br>
+dropdown-menue icon glich<br>
+last but not the least : mobile view<br>
+<i class="fa-solid fa-sort-up"></i>
+</section>
+
+</main>
+
+
+
+</body>
+</html>
